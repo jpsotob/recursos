@@ -64,11 +64,3 @@ for candidato in candidatos:
 with open('../visor-politico/public/json/twitter-candidatos-seguidores.json', 'w') as outfile:
     json.dump(json_file, outfile)
 print ("finished")
-
-"""
-candidates = [[],[],[],[],[],[],[]]
-
-
-candidates = [{"celidalopec","hermosillo"},"elpatodelucas","charlyleonmc","myrnarea2018"]
-
-"""
