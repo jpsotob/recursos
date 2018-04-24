@@ -8,6 +8,7 @@ consumer_secret = ''
 access_token = '-'
 access_token_secret = ''
 
+
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth,wait_on_rate_limit=True)
@@ -39,7 +40,11 @@ json_file = {}
 
 for candidato in candidatos:
     if candidato[twitter]:
-        user = api.get_user(candidato[twitter])
+        try:
+            user = api.get_user(candidato[twitter])
+        except:
+            print("Error, el usuario " + candidato[nombre] + " contiene un twitter :" + candidato[twitter] + " inexistente, favor de corregir")
+            continue
         json_file[candidato[nombre]] = {
             "actor_politico": candidato[actor_politico],
             "sede": candidato[sede],

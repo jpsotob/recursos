@@ -68,7 +68,11 @@ now = time.mktime(datetime.datetime(_now.year, _now.month , _now.day).timetuple(
 
 for candidato in candidatos:
     if candidato[twitter]:
-        user = api.get_user(candidato[twitter])
+        try:
+            user = api.get_user(candidato[twitter])
+        except:
+            print("Error, el usuario " + candidato[nombre] + " contiene un twitter :" + candidato[twitter] + " inexistente, favor de corregir")
+            continue
         count = 0
 
         startDate = datetime.datetime(_date.year, _date.month, _date.day, 0, 0, 0)
