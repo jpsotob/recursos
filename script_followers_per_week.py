@@ -17,7 +17,7 @@ api = tweepy.API(auth,wait_on_rate_limit=True)
 #Abrimos el json
 from pprint import pprint
 
-path_to_json = '../visor-politico/public/json/twitter-candidatos-seguidores-semanales.json'
+path_to_json = '../visor-politico/public/json/twitter-candidatos-datos-semanales.json'
 
 if os.path.isfile(path_to_json) and os.access(path_to_json, os.R_OK):
     jsonData = json.load(open(path_to_json))
@@ -53,20 +53,57 @@ print (jsonData)
 
 for candidato in candidatos:
     if candidato[twitter] and not candidato[nombre] in jsonData:
-        jsonData[candidato[nombre]] = [];
+        jsonData[candidato[nombre]] = {}
+        jsonData[candidato[nombre]]["seguidores"] = []
+        jsonData[candidato[nombre]]["tweets"] = []
+        jsonData[candidato[nombre]]["tweets_semana"] = []
 
-print(candidatos)
+
+
 _now = datetime.datetime.now()
+
+_date = (datetime.date.today() - datetime.timedelta(days=7))
+
 now = time.mktime(datetime.datetime(_now.year, _now.month , _now.day).timetuple()) * 1000
 
 for candidato in candidatos:
     if candidato[twitter]:
         user = api.get_user(candidato[twitter])
-        jsonData[candidato[nombre]].append([
+        count = 0
+
+        startDate = datetime.datetime(_date.year, _date.month, _date.day, 0, 0, 0)
+
+        tweets = []
+        cond = True
+        page = 0
+        while cond:
+            page += 1
+            tmpTweets = api.user_timeline(user.id, page=page)
+            for tweet in tmpTweets:
+                if tweet.created_at > startDate:
+                    count +=1
+                    tweets.append(tweet)
+                else:
+                    cond = False
+                    break
+
+        print(len(tweets))
+        jsonData[candidato[nombre]]["seguidores"].append([
             now,
             user.followers_count
-    ]);
+        ])
+        jsonData[candidato[nombre]]["tweets"].append([
+            now,
+            user.statuses_count
+        ])
+        jsonData[candidato[nombre]]["tweets_semana"].append([
+            now,
+            count
+        ])
+        
+        
 
+print(jsonData)
 with open(path_to_json, 'w') as outfile:
     json.dump(jsonData, outfile)
 print ("finished")

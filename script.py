@@ -5,7 +5,7 @@ import time
 ####Credenciales para uso del tweepy
 consumer_key = ''
 consumer_secret = ''
-access_token = ''
+access_token = '-'
 access_token_secret = ''
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -48,7 +48,8 @@ for candidato in candidatos:
             "genero": candidato[genero],
             "twitter": candidato[twitter],
             "followers": user.followers_count,
-            "picture": user.profile_image_url.replace("_normal","")
+            "picture": user.profile_image_url.replace("_normal",""),
+            "tweets": user.statuses_count
         }
     else:
         json_file[candidato[nombre]] = {
@@ -58,7 +59,8 @@ for candidato in candidatos:
             "genero": candidato[genero],
             "twitter": candidato[twitter],
             "followers": 0,
-            "picture": "../img/no_image.png"
+            "picture": "../img/no_image.png",
+            "tweets": 0
         }
 
 with open('../visor-politico/public/json/twitter-candidatos-seguidores.json', 'w') as outfile:
